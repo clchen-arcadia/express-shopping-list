@@ -1,0 +1,25 @@
+{
+  "name": "express-shopping-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcpalca/express-shopping-list.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcpalca/express-shopping-list/issues"
+  },
+  "homepage": "https://github.com/jcpalca/express-shopping-list#readme",
+  "dependencies": {
+    "express": "^5.0.0-beta.1"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.1"
+  }
+}

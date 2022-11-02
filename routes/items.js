@@ -3,7 +3,7 @@
 const express = require("express");
 const router = new express.Router();
 
-const { BadRequestError } = require("../expressError");
+const { BadRequestError, NotFoundError } = require("../expressError");
 
 const itemsDb = require("../fakeDb");
 // const itemsDbList = itemsDb.items;
@@ -42,9 +42,33 @@ router.post("/", function (req, res) {
   return res.json({added: itemObj});
 });
 
-// router.get("/:name");
+router.get("/:name", function (req, res) {
+  const itemName = req.params.name;
 
-// router.patch("/:name");
+  for(let item of itemsDb.items) {
+    if(item.name === itemName) {
+      return res.json(item);
+    }
+  }
+
+  throw new NotFoundError();
+});
+
+router.patch("/:name", function (req, res) {
+  if(!req.body.name || !req.body.price) throw new BadRequestError();
+
+  const itemName = req.params.name;
+
+  for(let i = 0; i < itemsDb.items.length; i++) {
+    if(itemsDb.items[i].name === itemName) {
+      itemsDb.items[i].name = data.name;
+      itemsDb.items[i].price = data.price;
+      return res.json({updated: itemsDb.items[i]});
+    }
+  }
+
+  throw new NotFoundError();
+});
 
 // router.delete("/:name");
 

@@ -56,20 +56,33 @@ router.get("/:name", function (req, res) {
 
 router.patch("/:name", function (req, res) {
   if(!req.body.name || !req.body.price) throw new BadRequestError();
+  if(Number.isNaN(parseFloat(req.body.price))) throw new BadRequestError();
 
   const itemName = req.params.name;
 
-  for(let i = 0; i < itemsDb.items.length; i++) {
-    if(itemsDb.items[i].name === itemName) {
-      itemsDb.items[i].name = data.name;
-      itemsDb.items[i].price = data.price;
-      return res.json({updated: itemsDb.items[i]});
+  for(let item of itemsDb.items) {
+    if(item.name === itemName) {
+      item.name = req.body.name;
+      item.price = req.body.price;
+      return res.json({updated: item});
     }
   }
 
   throw new NotFoundError();
 });
 
-// router.delete("/:name");
+router.delete("/:name", function (req, res) {
+
+  const itemName = req.params.name;
+
+  for(let i = 0; i < itemsDb.items.length; i++) {
+    if(itemsDb.items[i].name === itemName) {
+      itemsDb.items.splice(i, 1);
+      return res.json({message: "Deleted"});
+    }
+  }
+
+  throw new NotFoundError();
+});
 
 module.exports = router;

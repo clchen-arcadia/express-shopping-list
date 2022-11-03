@@ -19,20 +19,22 @@ afterEach(function() {
 });
 
 describe("test GET /items", function() {
-  it("get the list of items", async function() {
+  it("gets the list of items", async function() {
     const resp = await request(app).get('/items');
+    expect(resp.statusCode).toEqual(200);
     expect(resp.body).toEqual({items: [TEST_ITEM]});
   })
 });
 
 describe("test POST /items", function() {
-  it("create a new item", async function() {
+  it("creates a new item", async function() {
     const resp = await request(app)
       .post('/items')
       .send({
         name: 'soda',
         price: 1
       });
+    expect(resp.statusCode).toEqual(200);
     expect(resp.body).toEqual({added: {
       name: 'soda',
       price: 1
@@ -55,5 +57,41 @@ describe("test POST /items", function() {
       .post('/items')
       .send({});
       expect(resp.statusCode).toEqual(400);
+  });
+});
+
+describe("test GET /items/:name", function() {
+  it("gets single item", async function() {
+    const resp = await request(app).get(`/items/${TEST_ITEM.name}`);
+    expect(resp.statusCode).toEqual(200);
+    expect(resp.body).toEqual(TEST_ITEM);
+  });
+
+  it("rejects nonexistent item", async function() {
+    const resp = await request(app).get("/items/nonexistent");
+    expect(resp.statusCode).toEqual(404);
+  });
+});
+
+// describe("test PATCH /items/:name", function() {
+//   it("updates single item", async function() {
+//     const resp = await request(app)
+//       .patch(`/items/${TEST_ITEM.name}`)
+//       .send()
+//   })
+// })
+
+describe("test DELETE /items/:name", function() {
+  it("rejects nonexistent item", async function() {
+    const resp = await request(app).delete("/items/nonexistent");
+    expect(resp.statusCode).toEqual(404);
+    expect(db.items.length).toEqual(1);
+  });
+
+  it("deletes a single item", async function() {
+    const resp = await request(app).delete(`/items/${TEST_ITEM.name}`);
+    expect(resp.statusCode).toEqual(200);
+    expect(db.items.length).toEqual(0);
+    expect(resp.body).toEqual({ message: "Deleted"});
   });
 });
